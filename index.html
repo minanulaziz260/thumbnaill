@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Frame Studio: Online Video Thumbnail and Frame Generator</title>
+  <meta name="description" content="Offline-capable browser tool to capture high-resolution snapshots, thumbnails, and frame sequences from video files or URLs.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Application Header -->
+  <header class="app-header">
+    <div class="brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+        <line x1="7" y1="2" x2="7" y2="22"></line>
+        <line x1="17" y1="2" x2="17" y2="22"></line>
+        <line x1="2" y1="12" x2="22" y2="12"></line>
+        <line x1="2" y1="7" x2="7" y2="7"></line>
+        <line x1="2" y1="17" x2="7" y2="17"></line>
+        <line x1="17" y1="17" x2="22" y2="17"></line>
+        <line x1="17" y1="7" x2="22" y2="7"></line>
+      </svg>
+      <h1 class="brand-title">Video Frame Studio</h1>
+      <span class="brand-tag">v2.0</span>
+    </div>
+
+    <div class="header-actions">
+      <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme">
+        <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <span id="themeLabel">Light Mode</span>
+      </button>
+
+      <button id="shortcutsBtn" class="btn btn-secondary" type="button" aria-label="Keyboard shortcuts">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <line x1="6" y1="8" x2="6" y2="8.01"></line>
+          <line x1="10" y1="8" x2="10" y2="8.01"></line>
+          <line x1="14" y1="8" x2="14" y2="8.01"></line>
+          <line x1="18" y1="8" x2="18" y2="8.01"></line>
+          <line x1="6" y1="12" x2="6" y2="12.01"></line>
+          <line x1="18" y1="12" x2="18" y2="12.01"></line>
+          <line x1="7" y1="16" x2="17" y2="16"></line>
+        </svg>
+        <span>Shortcuts</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workbench Grid -->
+  <main class="workbench">
+
+    <!-- Column 1: Video Viewport & Playback Controls -->
+    <section class="panel" aria-labelledby="video-section-title">
+      <div class="panel-header">
+        <h2 id="video-section-title" class="panel-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Video Monitor
+        </h2>
+        <div id="videoMetaBadge" class="meta-chip hidden">
+          <span id="metaRes">0x0</span>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <!-- Video Source Selection -->
+        <div class="source-section">
+          <div class="source-tabs" role="tablist" aria-label="Video input source">
+            <button id="tabFile" class="source-tab active" role="tab" aria-selected="true" aria-controls="source-file-panel">Local Video File</button>
+            <button id="tabUrl" class="source-tab" role="tab" aria-selected="false" aria-controls="source-url-panel">Direct Video URL</button>
+          </div>
+
+          <!-- File upload dropzone -->
+          <div id="source-file-panel" class="dropzone" tabindex="0" role="button" aria-label="Drop video file or click to browse">
+            <input type="file" id="videofile" class="dropzone-input" accept="video/mp4,video/webm,video/ogg,video/quicktime,.mp4,.webm,.ogg,.mov">
+            <div class="dropzone-label">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span class="dropzone-title">Drop video file here or click to browse</span>
+              <span class="dropzone-hint">Supports MP4, WebM, OGG, and QuickTime</span>
+            </div>
+          </div>
+
+          <!-- URL input drawer -->
+          <div id="source-url-panel" class="source-url-drawer hidden">
+            <div class="url-input-row">
+              <label for="videourl" class="sr-only">Direct video resource URL</label>
+              <input type="url" id="videourl" class="input-text" placeholder="https://example.com/video.mp4">
+              <button id="loadUrlBtn" class="btn btn-secondary" type="button">Load URL</button>
+            </div>
+            <p class="input-hint">Enter direct link to a video file. External servers must permit CORS.</p>
+          </div>
+        </div>
+
+        <!-- Video Viewport -->
+        <div class="video-stage" id="videoStage">
+          <div id="stageEmpty" class="stage-empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+              <polygon points="10 8 16 12 10 16 10 8"></polygon>
+            </svg>
+            <p>No video loaded. Select a file or enter a URL above to inspect frames.</p>
+          </div>
+          <video id="video" playsinline preload="metadata" class="hidden"></video>
+        </div>
+
+        <!-- Timeline & Transport Controls -->
+        <div class="timeline-deck">
+          <!-- Time Scrubber -->
+          <div class="scrubber-row">
+            <label for="slider" class="sr-only">Playback position scrubber</label>
+            <input type="range" id="slider" class="scrubber-slider" min="0" max="100" value="0" step="0.01" disabled>
+            <div class="timecode-readout">
+              <span id="currentTimeReadout">00:00.00</span> / <span id="durationReadout">00:00.00</span>
+            </div>
+          </div>
+
+          <!-- Transport Buttons -->
+          <div class="transport-bar" id="videoControls">
+            <button class="btn-transport" type="button" id="btnStart" title="Jump to start (0:00)" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                <line x1="5" y1="19" x2="5" y2="5"></line>
+              </svg>
+              <span>Start</span>
+            </button>
+            <button class="btn-transport" type="button" id="btnMin1m" title="Back 1 minute" disabled>-1m</button>
+            <button class="btn-transport" type="button" id="btnMin5s" title="Back 5 seconds" disabled>-5s</button>
+            <button class="btn-transport" type="button" id="btnMin1s" title="Back 1 second" disabled>-1s</button>
+            <button class="btn-transport" type="button" id="btnMinFrame" title="Step back 1 frame (1/25s)" disabled>-1fr</button>
+
+            <!-- Primary Play/Pause Button -->
+            <button class="btn-transport primary-play" type="button" id="btnPlayPause" aria-label="Play or pause video" disabled>
+              <svg id="playIcon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <svg id="pauseIcon" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+              <span id="playLabel">Play</span>
+            </button>
+
+            <button class="btn-transport" type="button" id="btnPlusFrame" title="Step forward 1 frame (1/25s)" disabled>+1fr</button>
+            <button class="btn-transport" type="button" id="btnPlus1s" title="Forward 1 second" disabled>+1s</button>
+            <button class="btn-transport" type="button" id="btnPlus5s" title="Forward 5 seconds" disabled>+5s</button>
+            <button class="btn-transport" type="button" id="btnPlus1m" title="Forward 1 minute" disabled>+1m</button>
+            <button class="btn-transport" type="button" id="btnEnd" title="Jump to end" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+              <span>End</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Video Properties Strip -->
+        <div id="videoInfo" class="metadata-strip hidden">
+          <div class="meta-chip">Resolution: <strong id="infoRes">--</strong></div>
+          <div class="meta-chip">Duration: <strong id="infoDuration">--</strong></div>
+          <div class="meta-chip">Position: <strong id="infoPos">--</strong></div>
+          <div class="meta-chip">Aspect: <strong id="infoAspect">--</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Column 2: Snap Studio & Output Gallery -->
+    <section class="panel" aria-labelledby="gallery-section-title">
+      <div class="panel-header">
+        <h2 id="gallery-section-title" class="panel-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+          Snapshot Studio
+        </h2>
+        <span id="snapsize" class="gallery-count">0 frames captured</span>
+      </div>
+
+      <div class="panel-body">
+        <!-- Capture Configurations -->
+        <div class="settings-grid">
+          <div class="form-group">
+            <label for="videow" class="form-label">Output Width (px)</label>
+            <input type="number" id="videow" class="input-text" value="640" min="160" max="7680" step="10">
+          </div>
+
+          <div class="form-group">
+            <label for="snap_each" class="form-label">Auto Snap Interval</label>
+            <select id="snap_each" class="select-control">
+              <option value="2%">Every 2% (50 images)</option>
+              <option value="4%" selected>Every 4% (25 images)</option>
+              <option value="5%">Every 5% (20 images)</option>
+              <option value="6.25%">Every 6.25% (16 images)</option>
+              <option value="10%">Every 10% (10 images)</option>
+              <option value="0.0166666m">Every 1 second</option>
+              <option value="0.0833333m">Every 5 seconds</option>
+              <option value="0.166666m">Every 10 seconds</option>
+              <option value="0.5m">Every 30 seconds</option>
+              <option value="1m">Every 1 minute</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="snapd" class="form-label">Capture Delay (ms)</label>
+            <input type="number" id="snapd" class="input-text" value="300" min="50" max="3000" step="50">
+          </div>
+        </div>
+
+        <!-- Action Command Deck -->
+        <div class="actions-deck">
+          <button id="snap" class="btn btn-primary" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span>Snap Frame (S)</span>
+          </button>
+
+          <button id="snap2" class="btn btn-secondary" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span id="snap2Label">Auto Snap All</span>
+          </button>
+
+          <button id="save" class="btn btn-secondary" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Save Selected PNG</span>
+          </button>
+
+          <button id="saveall" class="btn btn-secondary" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Save All as ZIP (Z)</span>
+          </button>
+
+          <button id="clear" class="btn btn-danger" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Clear</span>
+          </button>
+        </div>
+
+        <!-- Active Inspected Frame Preview -->
+        <div id="previewCard" class="preview-card hidden">
+          <img id="preview" src="img/blank.png" alt="Inspected captured video frame">
+          <div class="preview-overlay">
+            <span id="previewTimecode" class="preview-timecode">Selected Frame</span>
+            <button id="previewDownloadBtn" class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" type="button">
+              Download PNG
+            </button>
+          </div>
+        </div>
+
+        <!-- Frame Gallery & Thumbnails -->
+        <div class="gallery-section">
+          <div id="galleryEmpty" class="gallery-empty">
+            No frames captured yet. Scrub video to the desired time and click "Snap Frame" or run "Auto Snap All".
+          </div>
+          <div id="outputs" class="outputs-grid"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Hidden Working Elements -->
+  <canvas id="canvas" class="hidden" width="640" height="360"></canvas>
+  <a id="imagelink" class="hidden" href="#" download>Download Anchor</a>
+
+  <!-- Keyboard Shortcuts Modal Dialog -->
+  <div id="shortcutsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="shortcuts-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="shortcuts-modal-title" class="modal-title">Keyboard Shortcuts</h3>
+        <button id="closeShortcutsBtn" class="modal-close" type="button" aria-label="Close shortcuts dialog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <table class="shortcuts-table">
+        <tbody>
+          <tr>
+            <td><kbd>Space</kbd></td>
+            <td>Play or pause playback</td>
+          </tr>
+          <tr>
+            <td><kbd>&larr;</kbd> / <kbd>&rarr;</kbd></td>
+            <td>Seek backward / forward 1 second</td>
+          </tr>
+          <tr>
+            <td><kbd>Shift</kbd> + <kbd>&larr;</kbd> / <kbd>&rarr;</kbd></td>
+            <td>Seek backward / forward 5 seconds</td>
+          </tr>
+          <tr>
+            <td><kbd>[</kbd> / <kbd>]</kbd></td>
+            <td>Step backward / forward 1 frame (1/25s)</td>
+          </tr>
+          <tr>
+            <td><kbd>S</kbd></td>
+            <td>Snap current video frame</td>
+          </tr>
+          <tr>
+            <td><kbd>Z</kbd></td>
+            <td>Export all captured frames to ZIP</td>
+          </tr>
+          <tr>
+            <td><kbd>Esc</kbd></td>
+            <td>Close dialog or cancel auto-capture</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Local Offline-Ready Script Dependencies -->
+  <script src="js/jszip.min.js"></script>
+  <script src="js/filesaver.min.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
